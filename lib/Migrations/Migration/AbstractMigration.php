@@ -4,6 +4,7 @@ namespace Migrations\Migration;
 
 use Migrations\Migration;
 use ReflectionClass;
+use Exception;
 
 abstract class AbstractMigration implements Migration
 {
@@ -23,7 +24,12 @@ abstract class AbstractMigration implements Migration
 
     protected function getDataFile($filename)
     {
-        return $this->dataFolder . '/' . $filename;
+        $file = $this->dataFolder . '/' . $filename;
+        if (! file_exists($file)) {
+            throw new Exception('datafile not found ' . $filename);
+        }
+
+        return file_get_contents($file);
     }
 
     abstract public function up();
