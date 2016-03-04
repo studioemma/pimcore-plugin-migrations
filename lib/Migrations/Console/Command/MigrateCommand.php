@@ -33,8 +33,10 @@ class MigrateCommand extends Command
         $direction = $input->getArgument('direction');
         $output->writeln('Running migrations <comment>' . $direction . '</comment>');
 
+        $to = $input->getArgument('to');
+
         $run = new \Migrations\Migration\Run($migrationsFolder);
-        $migrations = $run->runMigrations($direction);
+        $migrations = $run->runMigrations($direction, $to);
 
         $output->writeln('migrations run from '
             . '<info>' . $migrations['from'] . '</info>'

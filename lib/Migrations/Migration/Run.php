@@ -107,7 +107,12 @@ class Run
         }
 
         if (true === $done) {
-            return $updated;
+            return [
+                'skipped' => $skipped,
+                'updated' => $updated,
+                'from' => $from,
+                'to' => $to,
+            ];
         }
 
         $migrations = $this->getMigrationList($direction);
@@ -119,15 +124,22 @@ class Run
 
         foreach ($migrations as $migrationVersion => $migration) {
             $migrate = false;
+            $compare = $this->compareVersion($migrationVersion);
+            $toCompare = $this->compareVersion($to);
             if (\Migrations\Migration::DIRECTION_UP === $direction) {
-                $compare = $this->compareVersion($migrationVersion);
-                if (1 === $compare) {
+                if (1 === $compare
+                    && (
+                        1 === $toCompare
+                        || 0 === $toCompare
+                    )) {
                     $migrate = true;
                 }
             } elseif (\Migrations\Migration::DIRECTION_DOWN === $direction) {
-                $compare = $this->compareVersion($migrationVersion);
-                if (0 === $compare
-                    || -1 === $compare) {
+                if ((
+                        0 === $compare
+                        || -1 === $compare
+                    )
+                    && -1 === $toCompare) {
                     $migrate = true;
                 }
             }
