@@ -34,8 +34,12 @@ class MigrateCommand extends Command
         $output->writeln('Running migrations <comment>' . $direction . '</comment>');
 
         $run = new \Migrations\Migration\Run($migrationsFolder);
-        $run->runMigrations($direction);
+        $migrations = $run->runMigrations($direction);
 
-        $output->writeln('migrate');
+        $output->writeln('migrations run from '
+            . '<info>' . $migrations['from'] . '</info>'
+            . ' to '
+            . '<info>' . $migrations['to'] . '</info>'
+        );
     }
 }
