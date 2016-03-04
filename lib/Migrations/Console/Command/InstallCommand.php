@@ -94,8 +94,6 @@ class InstallCommand extends AbstractCommand
             $dbConfig['params']['port'] = $input->getOption('db-port');
         }
 
-        var_dump($dbConfig);
-
         // try to establish a mysql connection
         try {
             $db = \Zend_Db::factory($dbConfig['adapter'], $dbConfig['params']);
