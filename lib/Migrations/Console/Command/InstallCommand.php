@@ -6,14 +6,14 @@
 namespace Migrations\Console\Command;
 
 use Pimcore\Model\Tool;
-use Pimcore\Console\AbstractCommand;
 use Pimcore\ExtensionManager;
+use Symfony\Component\Console\Command\Command;
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Output\OutputInterface;
 
-class InstallCommand extends AbstractCommand
+class InstallCommand extends Command
 {
     protected function configure()
     {
