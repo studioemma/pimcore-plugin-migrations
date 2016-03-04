@@ -90,9 +90,10 @@ class Run
     public function runMigrations($direction = \Migrations\Migration::DIRECTION_UP, $to = null)
     {
         $updated = [];
+        $skipped = [];
         $done = false;
 
-        $currentVersion = $this->getCurrentVersion();
+        $from = $currentVersion = $this->getCurrentVersion();
 
         if (null !== $to) {
             $toCompare = $this->compareVersion($to);
@@ -117,14 +118,36 @@ class Run
         }
 
         foreach ($migrations as $migrationVersion => $migration) {
-            if ($this->compareVersion($migrationVersion) != $execMatch) {
-                echo "skip " . $migration['file'] . PHP_EOL;
+            $migrate = false;
+            if (\Migrations\Migration::DIRECTION_UP === $direction) {
+                $compare = $this->compareVersion($migrationVersion);
+                if (1 === $compare) {
+                    $migrate = true;
+                }
+            } elseif (\Migrations\Migration::DIRECTION_DOWN === $direction) {
+                $compare = $this->compareVersion($migrationVersion);
+                if (0 === $compare
+                    || -1 === $compare) {
+                    $migrate = true;
+                }
+            }
+
+            if (false === $migrate) {
+                $skipped[] = $migration['file'];
+                $migrationVersion = $currentVersion;
                 continue;
             }
 
-            $this->runMigration($migrationVersion, $migration, $direction);
+            $migrationVersion = $this->runMigration($migrationVersion, $migration, $direction);
+            $updated[] = $migration['file'];
         }
 
+        return [
+            'skipped' => $skipped,
+            'updated' => $updated,
+            'from' => $from,
+            'to' => $migrationVersion,
+        ];
     }
 
     protected function getMigrationList($direction = \Migrations\Migration::DIRECTION_UP)
@@ -175,11 +198,16 @@ class Run
         $this->db->beginTransaction();
         try {
             $pMigration->$direction();
+            if (\Migrations\Migration::DIRECTION_DOWN === $direction) {
+                $migrationVersion -= 1;
+            }
             $this->updateCurrentVersion($migrationVersion);
             $this->db->commit();
         } catch (Exception $e) {
             $this->db->rollback();
             throw $e;
         }
+
+        return $migrationVersion;
     }
 }
