@@ -96,6 +96,7 @@ class Run
         $from = $currentVersion = $this->getCurrentVersion();
 
         if (null !== $to) {
+            $to = (int) $to;
             $toCompare = $this->compareVersion($to);
             if (-1 == $toCompare) {
                 $direction = \Migrations\Migration::DIRECTION_DOWN;
@@ -117,9 +118,23 @@ class Run
 
         $migrations = $this->getMigrationList($direction);
 
+        $toVersion = null;
+        if (null === $to) {
+            end($migrations);
+            $toVersion = key($migrations);
+            reset($migrations);
+        }
+
         $execMatch = 1;
         if (\Migrations\Migration::DIRECTION_DOWN === $direction) {
             $execMatch = -1;
+            if (null !== $toVersion) {
+                $toVersion -= 1;
+            }
+        }
+
+        if (null !== $toVersion) {
+            $to = $toVersion;
         }
 
         foreach ($migrations as $migrationVersion => $migration) {
