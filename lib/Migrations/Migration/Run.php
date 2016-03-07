@@ -27,6 +27,8 @@ class Run
         $this->db = $pimcoreDbWrapper->getResource();
         if (! $this->hasVersionTable()) {
             $this->createVersionTable();
+        } else {
+            $this->checkVersionTable();
         }
     }
 
@@ -44,12 +46,34 @@ class Run
     protected function createVersionTable()
     {
         $query = 'CREATE TABLE `_migration_version` ('
-            . 'version INT(10) UNSIGNED PRIMARY KEY'
+            . 'version INT(10) UNSIGNED PRIMARY KEY,'
+            . ' pimcore_revision INT(10) UNSIGNED,'
             . ')';
         $this->db->query($query);
-        $query = 'INSERT INTO `_migration_version` (`version`)'
-            . ' VALUE (0)';
+        $query = 'INSERT INTO `_migration_version` (`version`, `pimcore_revision`)'
+            . ' VALUE (0, ' . \Website\Migrations\InitialPimcoreVersion::REVISION . ')';
         $this->db->query($query);
+    }
+
+    protected function checkVersionTable()
+    {
+        $fields = ['pimcore_revision'];
+        $query = 'SHOW COLUMNS from `_migration_version`';
+        $stmt = $this->db->query($query);
+        $tableFields = $stmt->fetchAll();
+        $existingFields = [];
+
+        foreach ($tableFields as $field) {
+            $existingFields[] = $field['Field'];
+        }
+
+        foreach ($fields as $field) {
+            if (! in_array($field, $existingFields)) {
+                $query = 'ALTER TABLE `_migration_version`'
+                    . ' ADD `pimcore_revision` INT(10) UNSIGNED after `version`';
+                $this->db->query($query);
+            }
+        }
     }
 
     protected function getCurrentVersion()
@@ -75,6 +99,22 @@ class Run
         $query = 'UPDATE `_migration_version` SET `version` = ?';
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$version]);
+    }
+
+    protected function getMigratedPimcoreRevision()
+    {
+        $query = 'SELECT pimcore_revision FROM `_migration_version` LIMIT 1';
+        $stmt = $this->db->query($query);
+        $revision = (int) $stmt->fetchColumn();
+
+        return $revision;
+    }
+
+    protected function updateMigratedPimcoreRevision($revision)
+    {
+        $query = 'UPDATE `_migration_version` SET `pimcore_revision` = ?';
+        $stmt = $this->db->prepare($query);
+        return $stmt->execute([$revision]);
     }
 
     protected function compareVersion($newVersion)
@@ -222,9 +262,45 @@ class Run
         $className = $migration['class'];
         $pMigration = new $className($this->db);
 
+        if (! ($pMigration instanceof \Migrations\Migration)) {
+            throw new Exception('A migration must be an instance of Migrations\Migration');
+        }
+
+        $systemMigration = false;
+        if ($pMigration instanceof \Migrations\SystemMigration) {
+            $systemMigration = true;
+        }
+
         $this->db->beginTransaction();
         try {
-            $pMigration->$direction();
+            $execMigration = true;
+            if (true === $systemMigration) {
+                /**
+                 * only run system upgrades if needed
+                 *
+                 * NOTE: you will not be able to run down on system migrations
+                 *       because that would break the running code.
+                 */
+                if (\Migrations\Migration::DIRECTION_DOWN === $direction) {
+                    $execMigration = false;
+                }
+
+                $migratedPimcoreRevision = $this->getMigratedPimcoreRevision();
+
+                if (! ($migratedPimcoreRevision < $pMigration->getEndRevision()
+                    && \Pimcore\Version::getRevision() >= $pMigration->getStartRevision())) {
+                    $execMigration = false;
+                }
+
+                if (true === $execMigration) {
+                    $this->updateMigratedPimcoreRevision(
+                        $pMigration->getEndRevision()
+                    );
+                }
+            }
+            if (true === $execMigration) {
+                $pMigration->$direction();
+            }
             if (\Migrations\Migration::DIRECTION_DOWN === $direction) {
                 $migrationVersion -= 1;
             }
