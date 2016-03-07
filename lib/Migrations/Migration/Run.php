@@ -47,11 +47,11 @@ class Run
     {
         $query = 'CREATE TABLE `_migration_version` ('
             . 'version INT(10) UNSIGNED PRIMARY KEY,'
-            . ' pimcore_revision INT(10) UNSIGNED,'
+            . ' pimcore_revision INT(10) UNSIGNED'
             . ')';
         $this->db->query($query);
         $query = 'INSERT INTO `_migration_version` (`version`, `pimcore_revision`)'
-            . ' VALUE (0, ' . \Website\Migrations\InitialPimcoreVersion::REVISION . ')';
+            . ' VALUE (0, ' . \Pimcore\Version::getRevision() . ')';
         $this->db->query($query);
     }
 
