@@ -1,0 +1,19 @@
+{
+    "name": "studioemma/pimcore-plugin-migrations",
+    "type": "pimcore-plugin",
+    "license": "MIT",
+    "description": "Pimcore 4 migrations",
+    "keywords": ["pimcore","plugin"],
+    "homepage": "http://www.pimcore.org/",
+    "authors": [
+        {
+            "name": "Ike Devolder",
+            "email": "ike.devolder@studioemma.com",
+            "homepage": "http://www.studioemma.com/",
+            "role": "Developer"
+        }
+    ],
+    "require": {
+        "pimcore/installer-plugin": ">=1"
+    }
+}

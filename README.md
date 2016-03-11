@@ -11,8 +11,6 @@ Install the plugin
 To use the migrations make sure the files and folders found here are placed
 inside your pimcore project inside the folder `plugins\Migrations`.
 
-TODO: composer
-
 install
 -------
 
