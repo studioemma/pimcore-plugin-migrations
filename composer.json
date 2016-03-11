@@ -1,5 +1,5 @@
 {
-    "name": "studioemma/pimcore-plugin-migrations",
+    "name": "studioemma/migrations",
     "type": "pimcore-plugin",
     "license": "MIT",
     "description": "Pimcore 4 migrations",

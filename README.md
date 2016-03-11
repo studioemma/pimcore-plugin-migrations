@@ -11,6 +11,12 @@ Install the plugin
 To use the migrations make sure the files and folders found here are placed
 inside your pimcore project inside the folder `plugins\Migrations`.
 
+Or you can install the plugin via composer:
+
+~~~
+composer require studioemma/migrations:dev-master
+~~~
+
 install
 -------
 
