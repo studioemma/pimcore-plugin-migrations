@@ -10,6 +10,7 @@ use Symfony\Component\Console\Application;
 $application = new Application('Pimcore Migrations', '1.0.0');
 try {
     $application->add(new \Migrations\Console\Command\MigrateCommand());
+    $application->add(new \Migrations\Console\Command\GenerateCommand());
 } catch (Error $err) {
     include_once(
         realpath(

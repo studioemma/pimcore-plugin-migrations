@@ -140,9 +140,18 @@ must place the migrations in `website/lib/Website/Migrations`. You must name
 your migrations like `<number>-<ClassName>.php`, so for example
 `001-FirstMigration.php`.
 
-TODO:
+You can easily do this using build-in the skeleton generator:
+~~~
+$ php plugins/Migrations/cli/console.php generate YourMigrationClassName
+Successfully created migration file 001-YourMigrationClassName.php
+~~~
 
-- add migration skeleton generator
+In case you need a migrations data folder, just add the -d option:
+~~~
+$ php plugins/Migrations/cli/console.php generate YourMigrationClassName -d
+Successfully created migration data folder 001-YourMigrationClassName
+Successfully created migration file 001-YourMigrationClassName.php
+~~~
 
 The classname used inside the migration file must be prefixed with
 `PMigration_<ClassName>`. For example `PMigration_FirstMigration`.
