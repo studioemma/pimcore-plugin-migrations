@@ -177,16 +177,14 @@ class Run
             $to = $toVersion;
         }
 
+        $migratedVersion = $currentVersion;
         foreach ($migrations as $migrationVersion => $migration) {
             $migrate = false;
             $compare = $this->compareVersion($migrationVersion);
             $toCompare = $this->compareVersion($to);
             if (\Migrations\Migration::DIRECTION_UP === $direction) {
                 if (1 === $compare
-                    && (
-                        1 === $toCompare
-                        || 0 === $toCompare
-                    )) {
+                    && 1 === $toCompare) {
                     $migrate = true;
                 }
             } elseif (\Migrations\Migration::DIRECTION_DOWN === $direction) {
@@ -201,11 +199,10 @@ class Run
 
             if (false === $migrate) {
                 $skipped[] = $migration['file'];
-                $migrationVersion = $currentVersion;
                 continue;
             }
 
-            $migrationVersion = $this->runMigration($migrationVersion, $migration, $direction);
+            $migratedVersion = $this->runMigration($migrationVersion, $migration, $direction);
             $updated[] = $migration['file'];
         }
 
@@ -213,7 +210,7 @@ class Run
             'skipped' => $skipped,
             'updated' => $updated,
             'from' => $from,
-            'to' => $migrationVersion,
+            'to' => $migratedVersion,
         ];
     }
 
