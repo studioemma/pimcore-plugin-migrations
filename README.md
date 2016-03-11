@@ -84,7 +84,6 @@ in place because you usually will keep the pimcore version at that revision.
 TODO:
 
 - force down (also take the system migrations)
-- fix visualisation issue in down direction
 
 When you have used the cli installer the `Migrations` plugin will be enabled
 automatically. If you bring in this plugin at a later stage in your project you
@@ -161,7 +160,7 @@ But you probably want to extend `\Migrations\Migration\AbstractMigration`
 because there are some nice extra's there.
 
 If you are doing system migrations your migration file must also implement
-`\Migrations\Migration\SystemMigration`.
+`\Migrations\SystemMigration`.
 
 example migration:
 
