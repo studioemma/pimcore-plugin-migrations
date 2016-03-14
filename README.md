@@ -13,6 +13,14 @@ inside your pimcore project inside the folder `plugins\Migrations`.
 
 Or you can install the plugin via composer:
 
+stable:
+
+~~~
+composer require studioemma/migrations
+~~~
+
+unstable:
+
 ~~~
 composer require studioemma/migrations:dev-master
 ~~~
