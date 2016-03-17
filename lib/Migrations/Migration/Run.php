@@ -219,7 +219,7 @@ class Run
         $files = [];
 
         foreach (new \DirectoryIterator($this->migrationsFolder) as $fileInfo) {
-            if ($fileInfo->isDot() || $fileInfo->isDir()) {
+            if ($fileInfo->isDot() || $fileInfo->isDir() || $fileInfo->getBasename() == '.DS_Store') {
                 continue;
             }
 
