@@ -22,12 +22,19 @@ abstract class AbstractMigration implements Migration
         $this->dataFolder = str_replace('.php', '', $reflection->getFileName());
     }
 
-    protected function getDataFile($filename)
+    protected function getDatafilePath($filename)
     {
         $file = $this->dataFolder . '/' . $filename;
         if (! file_exists($file)) {
             throw new Exception('datafile not found ' . $filename);
         }
+
+        return $file;
+    }
+
+    protected function getDataFile($filename)
+    {
+        $file = $this->getDatafilePath($filename);
 
         return file_get_contents($file);
     }
