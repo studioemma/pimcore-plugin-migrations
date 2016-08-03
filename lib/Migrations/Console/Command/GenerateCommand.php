@@ -58,8 +58,8 @@ class GenerateCommand extends Command
         // Generate the file
         $migrationFileName = sprintf('%03d', $nextMigrationNumber) . '-' . $className . '.php';
 
-        $template = "
-<?php
+        $template = "<?php
+
 use Migrations\Migration\AbstractMigration;
 
 class PMigration_$className extends AbstractMigration
