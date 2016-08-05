@@ -13,6 +13,7 @@ $application = new Application('Pimcore Migrations', '1.0.2');
 if (ExtensionManager::isEnabled('plugin', 'Migrations')) {
     $application->add(new \Migrations\Console\Command\MigrateCommand());
     $application->add(new \Migrations\Console\Command\GenerateCommand());
+    $application->add(new \Migrations\Console\Command\VersionCommand());
 } else {
     include_once(
         realpath(

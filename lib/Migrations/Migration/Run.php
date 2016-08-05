@@ -76,7 +76,7 @@ class Run
         }
     }
 
-    protected function getCurrentVersion()
+    public function getCurrentVersion()
     {
         if (null === $this->currentVersion) {
             $query = 'SELECT version FROM `_migration_version` LIMIT 1';
@@ -101,7 +101,7 @@ class Run
         return $stmt->execute([$version]);
     }
 
-    protected function getMigratedPimcoreRevision()
+    public function getMigratedPimcoreRevision()
     {
         $query = 'SELECT pimcore_revision FROM `_migration_version` LIMIT 1';
         $stmt = $this->db->query($query);
