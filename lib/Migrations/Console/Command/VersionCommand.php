@@ -36,7 +36,7 @@ class VersionCommand extends Command
 
         $pimcoreVersion = $input->getOption('pimcore');
 
-        $run = new \Migrations\Migration\Run($migrationsFolder);
+        $run = new \Migrations\Migration\Run($migrationsFolder, $output);
         if (true === $pimcoreVersion) {
             $version = $run->getMigratedPimcoreRevision();
         } else {

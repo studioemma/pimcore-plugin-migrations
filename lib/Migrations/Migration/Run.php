@@ -15,7 +15,10 @@ class Run
     /** @var int */
     protected $currentVersion = null;
 
-    public function __construct($migrationsFolder)
+    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    protected $output = null;
+
+    public function __construct($migrationsFolder, $output)
     {
         if (! file_exists($migrationsFolder)) {
             throw new Exception('Migrations folder does not exist');
@@ -30,6 +33,7 @@ class Run
         } else {
             $this->checkVersionTable();
         }
+        $this->output = $output;
     }
 
     protected function hasVersionTable()
@@ -257,7 +261,7 @@ class Run
         require_once($this->migrationsFolder . '/' . $migration['file']);
 
         $className = $migration['class'];
-        $pMigration = new $className($this->db);
+        $pMigration = new $className($this->output, $this->db);
 
         if (! ($pMigration instanceof \Migrations\Migration)) {
             throw new Exception('A migration must be an instance of Migrations\Migration');
