@@ -186,6 +186,10 @@ class Run
             $to = $toVersion;
         }
 
+        $this->output->writeln(
+            "Running migrations from: " . $from . ' to ' $to . '.'
+        );
+
         $migratedVersion = $currentVersion;
         foreach ($migrations as $migrationVersion => $migration) {
             $migrate = false;
