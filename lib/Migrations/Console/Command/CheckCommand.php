@@ -28,7 +28,7 @@ class CheckCommand extends Command
             return 1;
         }
 
-        $run = new \Migrations\Migration\Run($migrationsFolder);
+        $run = new \Migrations\Migration\Run($migrationsFolder, $output);
         $migrations = $run->checkMigrations();
 
         $output->writeln('No failures found in the migrations');
