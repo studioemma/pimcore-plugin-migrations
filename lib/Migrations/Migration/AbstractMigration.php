@@ -11,11 +11,15 @@ abstract class AbstractMigration implements Migration
     /** @var Pimcore\Db\Wrapper */
     protected $db = null;
 
+    /** @var \Symfony\Component\Console\Output\OutputInterface */
+    protected $output = null;
+
     /** @var string */
     protected $dataFolder = null;
 
-    public function __construct($db)
+    public function __construct($output, $db)
     {
+        $this->output = $output;
         $this->db = $db;
 
         $reflection = new ReflectionClass($this);

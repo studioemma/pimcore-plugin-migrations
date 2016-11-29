@@ -35,7 +35,7 @@ class MigrateCommand extends Command
 
         $to = $input->getArgument('to');
 
-        $run = new \Migrations\Migration\Run($migrationsFolder);
+        $run = new \Migrations\Migration\Run($migrationsFolder, $output);
         $migrations = $run->runMigrations($direction, $to);
 
         $output->writeln('migrations run from '
