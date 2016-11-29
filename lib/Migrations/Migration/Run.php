@@ -87,6 +87,11 @@ class Run
         return $this->currentVersion;
     }
 
+    public function checkMigrations()
+    {
+        $this->getMigrationList();
+    }
+
     protected function updateCurrentVersion($version)
     {
         /**
