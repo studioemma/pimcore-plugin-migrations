@@ -91,6 +91,11 @@ class Run
         return $this->currentVersion;
     }
 
+    public function checkMigrations()
+    {
+        $this->getMigrationList();
+    }
+
     protected function updateCurrentVersion($version)
     {
         /**
@@ -223,7 +228,9 @@ class Run
         $files = [];
 
         foreach (new \DirectoryIterator($this->migrationsFolder) as $fileInfo) {
-            if ($fileInfo->isDot() || $fileInfo->isDir() || $fileInfo->getBasename() == '.DS_Store') {
+            if ($fileInfo->isDot()
+                || $fileInfo->isDir()
+                || $fileInfo->getBasename() == '.DS_Store') {
                 continue;
             }
 
@@ -237,6 +244,7 @@ class Run
         }
 
         $migrations = [];
+        $errors = [];
 
         foreach ($files as $file) {
             preg_match('/(?P<version>\d*)-(?P<class>[A-Za-z0-9]*)\.php/', $file, $matches);
@@ -244,13 +252,25 @@ class Run
                 throw new Exception('Migration file structure issue in: ' . $file);
             }
 
-            $version = $matches['version'];
+            $version = (int) $matches['version'];
             $class = $matches['class'];
 
-            $migrations[(int) $version] = [
-                'class' => 'PMigration_' . $class,
-                'file' => $file,
-            ];
+            if (isset($migrations[$version])) {
+                $errors[] = $file;
+            } else {
+                $migrations[$version] = [
+                    'class' => 'PMigration_' . $class,
+                    'file' => $file,
+                ];
+            }
+        }
+
+        if (! empty($errors)) {
+            throw new Exception(
+                'Encoutered version number issues with:'
+                . PHP_EOL
+                . implode(PHP_EOL, $errors)
+            );
         }
 
         return $migrations;

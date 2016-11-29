@@ -14,6 +14,7 @@ if (ExtensionManager::isEnabled('plugin', 'Migrations')) {
     $application->add(new \Migrations\Console\Command\MigrateCommand());
     $application->add(new \Migrations\Console\Command\GenerateCommand());
     $application->add(new \Migrations\Console\Command\VersionCommand());
+    $application->add(new \Migrations\Console\Command\CheckCommand());
 } else {
     include_once(
         realpath(
