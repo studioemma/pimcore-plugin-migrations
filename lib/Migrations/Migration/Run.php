@@ -187,7 +187,7 @@ class Run
         }
 
         $this->output->writeln(
-            "Running migrations from: " . $from . ' to ' $to . '.'
+            "Running migrations from: " . $from . ' to ' . $to . '.'
         );
 
         $migratedVersion = $currentVersion;
