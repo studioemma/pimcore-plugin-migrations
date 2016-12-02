@@ -99,7 +99,7 @@ class Run
     protected function updateCurrentVersion($version)
     {
         /**
-         * We could have set the new version here, but incase of a failure
+         * We could have set the new version here, but in case of a failure
          * we just want currentVersion to be filled with the one from the
          * database again.
          */
