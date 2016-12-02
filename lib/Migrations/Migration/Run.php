@@ -25,15 +25,28 @@ class Run
         }
 
         $this->migrationsFolder = $migrationsFolder;
-        $pimcoreDbWrapper = \Pimcore\Db::getConnection();
-        // We want exceptions, no silent failures
-        $this->db = $pimcoreDbWrapper->getResource();
+        $this->connectDb();
         if (! $this->hasVersionTable()) {
             $this->createVersionTable();
         } else {
             $this->checkVersionTable();
         }
         $this->output = $output;
+    }
+
+    protected function connectDb()
+    {
+        $pimcoreDbWrapper = \Pimcore\Db::getConnection();
+        // We want exceptions, no silent failures
+        $this->db = $pimcoreDbWrapper->getResource();
+    }
+
+    protected function reConnectDb()
+    {
+        try {
+            $this->db->closeConnection();
+        } catch(\Throwable $e) {}
+        $this->connectDb();
     }
 
     protected function hasVersionTable()
@@ -104,6 +117,8 @@ class Run
          * database again.
          */
         $this->currentVersion = null;
+
+        $this->reConnectDb();
 
         $query = 'UPDATE `_migration_version` SET `version` = ?';
         $stmt = $this->db->prepare($query);
