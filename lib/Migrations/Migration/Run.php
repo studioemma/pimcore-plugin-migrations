@@ -118,8 +118,6 @@ class Run
          */
         $this->currentVersion = null;
 
-        $this->reConnectDb();
-
         $query = 'UPDATE `_migration_version` SET `version` = ?';
         $stmt = $this->db->prepare($query);
         return $stmt->execute([$version]);
@@ -232,6 +230,7 @@ class Run
 
             $migratedVersion = $this->runMigration($migrationVersion, $migration, $direction);
             $updated[] = $migration['file'];
+            $this->reConnectDb();
         }
 
         return [
