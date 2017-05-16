@@ -36,6 +36,12 @@ if (!$conf) {
     }
 
     /**
+     * Disable opcache since we want to be able to reload files during
+     * migrations
+     */
+    ini_set('opcache.enable', 0);
+
+    /**
      * Plugin is fully available, allow migrations
      */
     $application->add(new \Migrations\Console\Command\MigrateCommand());
