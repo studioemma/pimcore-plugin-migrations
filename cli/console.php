@@ -8,7 +8,7 @@ include_once(__DIR__ . "/../../../pimcore/cli/startup.php");
 use Symfony\Component\Console\Application;
 use Pimcore\ExtensionManager;
 
-$application = new Application('Pimcore Migrations', '1.2.3');
+$application = new Application('Pimcore Migrations', '1.2.4');
 
 $conf = Pimcore\Config::getSystemConfig();
 if (!$conf) {
